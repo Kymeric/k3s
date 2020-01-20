@@ -1,0 +1,25 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - 'master'
+      - 'release/**'
+      - 'develop'
+      - 'hotfix/**'
+      - 'feature/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+        git fetch --prune --unshallow
+    - name: Get Git Version
+      #development environment debugging command: docker run -it --rm -v ${PWD}:/code -e GITHUB_ACTIONS=true --workdir /code 'gittools/gitversion:5.1.4-linux' /output buildserver
+      uses: docker://gittools/gitversion:5.1.4-linux
+      with:
+        args: /output buildserver
+    - name: Build
+      run: make
