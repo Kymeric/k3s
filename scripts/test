@@ -11,19 +11,24 @@ mkdir -p $artifacts
 
 . ./scripts/test-run-basics
 
-# # ---
+# ---
 
 E2E_OUTPUT=$artifacts test-run-sonobuoy
 
-# # ---
+# ---
 
-# if [ "$ARCH" != 'amd64' ]; then
-#     printf "\033[33mSkipping remaining tests, images not available for $ARCH.\033[m\n"
-#     exit 0
-# fi
+if [[ "$DRONE_SYSTEM_HOST" =~ 'publish' ]]; then
+  printf "\033[33mSkipping remaining tests on publish.\033[m\n"
+  exit 0
+fi
 
-# # ---
+if [ "$ARCH" != 'amd64' ]; then
+  printf "\033[33mSkipping remaining tests, images not available for $ARCH.\033[m\n"
+  exit 0
+fi
 
-# test-run-sonobuoy mysql
-# test-run-sonobuoy postgres
+# ---
+
+test-run-sonobuoy mysql
+test-run-sonobuoy postgres
 # test-run-sonobuoy dqlite
